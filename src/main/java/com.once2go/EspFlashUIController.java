@@ -22,6 +22,7 @@ public class EspFlashUIController implements IApplicationView {
     private JProgressBar mProgressBar1;
     private JLabel mStatus;
     private JLabel mFirmwareInitPatch;
+    private JTextArea mRxMonitor;
     private boolean isConnected;
 
 
@@ -87,6 +88,7 @@ public class EspFlashUIController implements IApplicationView {
         mProgressBar1.setMinimum(0);
         mProgressBar1.setMaximum(100);
         mProgressBar1.setStringPainted(true);
+        mRxMonitor.setEditable(false);
     }
 
     @Override
@@ -110,6 +112,11 @@ public class EspFlashUIController implements IApplicationView {
     @Override
     public void onFlashingFinished() {
         mFlashButton.setEnabled(true);
+    }
+
+    @Override
+    public void onLineFromUartReceived(String rxLine) {
+        mRxMonitor.append(rxLine);
     }
 
     @Override
@@ -144,10 +151,10 @@ public class EspFlashUIController implements IApplicationView {
      */
     private void $$$setupUI$$$() {
         mainWindow = new JPanel();
-        mainWindow.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(13, 7, new Insets(8, 8, 8, 8), -1, -1));
-        mainWindow.setMaximumSize(new Dimension(640, 240));
-        mainWindow.setMinimumSize(new Dimension(640, 240));
-        mainWindow.setPreferredSize(new Dimension(640, 240));
+        mainWindow.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(34, 7, new Insets(8, 8, 8, 8), -1, -1));
+        mainWindow.setMaximumSize(new Dimension(860, 640));
+        mainWindow.setMinimumSize(new Dimension(860, 640));
+        mainWindow.setPreferredSize(new Dimension(860, 640));
         mComboPortCombo = new JComboBox();
         mainWindow.add(mComboPortCombo, new com.intellij.uiDesigner.core.GridConstraints(0, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JLabel label1 = new JLabel();
@@ -165,24 +172,24 @@ public class EspFlashUIController implements IApplicationView {
         mSelectButton = new JButton();
         mSelectButton.setText("Select");
         mainWindow.add(mSelectButton, new com.intellij.uiDesigner.core.GridConstraints(1, 6, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final com.intellij.uiDesigner.core.Spacer spacer1 = new com.intellij.uiDesigner.core.Spacer();
-        mainWindow.add(spacer1, new com.intellij.uiDesigner.core.GridConstraints(2, 1, 4, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_VERTICAL, 1, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         mProgressBar1 = new JProgressBar();
-        mainWindow.add(mProgressBar1, new com.intellij.uiDesigner.core.GridConstraints(6, 0, 2, 6, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        mFlashButton = new JButton();
-        mFlashButton.setText("Flash");
-        mainWindow.add(mFlashButton, new com.intellij.uiDesigner.core.GridConstraints(2, 6, 11, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final com.intellij.uiDesigner.core.Spacer spacer2 = new com.intellij.uiDesigner.core.Spacer();
-        mainWindow.add(spacer2, new com.intellij.uiDesigner.core.GridConstraints(9, 1, 4, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_VERTICAL, 1, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        mainWindow.add(mProgressBar1, new com.intellij.uiDesigner.core.GridConstraints(2, 0, 2, 6, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         mStatus = new JLabel();
         mStatus.setText("...");
-        mainWindow.add(mStatus, new com.intellij.uiDesigner.core.GridConstraints(8, 0, 1, 6, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        mainWindow.add(mStatus, new com.intellij.uiDesigner.core.GridConstraints(4, 0, 1, 6, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JLabel label3 = new JLabel();
         label3.setText("Speed:");
         mainWindow.add(label3, new com.intellij.uiDesigner.core.GridConstraints(0, 2, 1, 3, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         mFirmwareInitPatch = new JLabel();
         mFirmwareInitPatch.setText("...");
         mainWindow.add(mFirmwareInitPatch, new com.intellij.uiDesigner.core.GridConstraints(1, 1, 1, 5, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JScrollPane scrollPane1 = new JScrollPane();
+        mainWindow.add(scrollPane1, new com.intellij.uiDesigner.core.GridConstraints(5, 0, 29, 6, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        mRxMonitor = new JTextArea();
+        scrollPane1.setViewportView(mRxMonitor);
+        mFlashButton = new JButton();
+        mFlashButton.setText("Flash");
+        mainWindow.add(mFlashButton, new com.intellij.uiDesigner.core.GridConstraints(5, 6, 24, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**

@@ -14,4 +14,6 @@ public interface IApplicationView {
     void onErrorReceived(String errorDescription);
 
     void onFlashingFinished();
+
+    void onLineFromUartReceived(String rxLine);
 }

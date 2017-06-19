@@ -16,6 +16,7 @@ public class AppViewPresenterImplementation implements IApplicationViewPresenter
     private SerialPort mSerialPort;
     private String mProjectPath;
     private ArrayList<String> mProjectFileList;
+    private StringBuilder mUartRxBuilder = new StringBuilder();
 
     public void setApplicationView(IApplicationView view) {
         if (view == null) {
@@ -73,30 +74,27 @@ public class AppViewPresenterImplementation implements IApplicationViewPresenter
     }
 
     public void flash() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mView.onFlashingStarted();
-                for (String file : mProjectFileList) {
-                    LinkedList<String> cmdList = Converter.convert(mProjectPath, file);
-                    int iterator = 0;
-                    if (cmdList != null) {
-                        int cmdSize = cmdList.size();
-                        for (String cmd : cmdList) {
-                            iterator++;
-                            try {
-                                mSerialPort.writeString(cmd);
-                                int progress = (int) (((float) iterator / (float) cmdSize) * 100);
-                                mView.onFlashProgress(progress, "Flashing: " + file);
-                                Thread.sleep(DELAY);
-                            } catch (SerialPortException | InterruptedException e) {
-                                e.printStackTrace();
-                            }
+        new Thread(() -> {
+            mView.onFlashingStarted();
+            for (String file : mProjectFileList) {
+                LinkedList<String> cmdList = Converter.convert(mProjectPath, file);
+                int iterator = 0;
+                if (cmdList != null) {
+                    int cmdSize = cmdList.size();
+                    for (String cmd : cmdList) {
+                        iterator++;
+                        try {
+                            mSerialPort.writeString(cmd);
+                            int progress = (int) (((float) iterator / (float) cmdSize) * 100);
+                            mView.onFlashProgress(progress, "Flashing: " + file);
+                            Thread.sleep(DELAY);
+                        } catch (SerialPortException | InterruptedException e) {
+                            e.printStackTrace();
                         }
                     }
                 }
-                mView.onFlashingFinished();
             }
+            mView.onFlashingFinished();
         }).start();
     }
 
@@ -117,7 +115,15 @@ public class AppViewPresenterImplementation implements IApplicationViewPresenter
     public void serialEvent(SerialPortEvent serialPortEvent) {
         try {
             String data = mSerialPort.readString(serialPortEvent.getEventValue());
-            System.out.println("uart:" + data);
+            if (data.equals("\r")) {
+                if (mUartRxBuilder != null && !mUartRxBuilder.toString().isEmpty()) {
+                    mView.onLineFromUartReceived(mUartRxBuilder.toString());
+                }
+                mUartRxBuilder = null;
+                mUartRxBuilder = new StringBuilder();
+            } else {
+                mUartRxBuilder.append(data);
+            }
         } catch (SerialPortException e) {
             e.printStackTrace();
         }
