@@ -23,6 +23,7 @@ public class EspFlashUIController implements IApplicationView {
     private JLabel mStatus;
     private JLabel mFirmwareInitPatch;
     private JTextArea mRxMonitor;
+    private JScrollPane mScrollPane;
     private boolean isConnected;
 
 
@@ -117,6 +118,8 @@ public class EspFlashUIController implements IApplicationView {
     @Override
     public void onLineFromUartReceived(String rxLine) {
         mRxMonitor.append(rxLine);
+        JScrollBar vertical = mScrollPane.getVerticalScrollBar();
+        vertical.setValue(vertical.getMaximum());
     }
 
     @Override
@@ -183,10 +186,10 @@ public class EspFlashUIController implements IApplicationView {
         mFirmwareInitPatch = new JLabel();
         mFirmwareInitPatch.setText("...");
         mainWindow.add(mFirmwareInitPatch, new com.intellij.uiDesigner.core.GridConstraints(1, 1, 1, 5, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JScrollPane scrollPane1 = new JScrollPane();
-        mainWindow.add(scrollPane1, new com.intellij.uiDesigner.core.GridConstraints(5, 0, 29, 6, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        mScrollPane = new JScrollPane();
+        mainWindow.add(mScrollPane, new com.intellij.uiDesigner.core.GridConstraints(5, 0, 29, 6, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         mRxMonitor = new JTextArea();
-        scrollPane1.setViewportView(mRxMonitor);
+        mScrollPane.setViewportView(mRxMonitor);
         mFlashButton = new JButton();
         mFlashButton.setText("Flash");
         mainWindow.add(mFlashButton, new com.intellij.uiDesigner.core.GridConstraints(5, 6, 24, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));

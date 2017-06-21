@@ -16,7 +16,7 @@ public class AppViewPresenterImplementation implements IApplicationViewPresenter
     private SerialPort mSerialPort;
     private String mProjectPath;
     private ArrayList<String> mProjectFileList;
-    private StringBuilder mUartRxBuilder = new StringBuilder();
+    private String mUartRxBuilder = "";
 
     public void setApplicationView(IApplicationView view) {
         if (view == null) {
@@ -114,15 +114,14 @@ public class AppViewPresenterImplementation implements IApplicationViewPresenter
     @Override
     public void serialEvent(SerialPortEvent serialPortEvent) {
         try {
-            String data = mSerialPort.readString(serialPortEvent.getEventValue());
-            if (data.equals("\r")) {
-                if (mUartRxBuilder != null && !mUartRxBuilder.toString().isEmpty()) {
-                    mView.onLineFromUartReceived(mUartRxBuilder.toString());
+            mUartRxBuilder += mSerialPort.readString(serialPortEvent.getEventValue());
+            if (mUartRxBuilder.contains("\r")) {
+                String[] split = mUartRxBuilder.split("\r");
+                int splitSize = split.length;
+                for (int i = 0; i < splitSize - 1; i++) {
+                    mView.onLineFromUartReceived(split[i]);
                 }
-                mUartRxBuilder = null;
-                mUartRxBuilder = new StringBuilder();
-            } else {
-                mUartRxBuilder.append(data);
+                mUartRxBuilder = split[splitSize - 1];
             }
         } catch (SerialPortException e) {
             e.printStackTrace();
